@@ -1,0 +1,21 @@
+{
+  "instance_id": "inst-gold-jewelry-01",
+  "instance_name": "黄金珠宝品牌试点",
+  "industry": "gold_jewelry",
+  "namespace_prefix": "ns-gold-01",
+  "bot_role": { "title": "珠宝品控与设计顾问 Bot", "escalation": "human_review" },
+  "knowledge_mounts": [
+    { "mount_id": "km-craft-gold", "source": "金银细工工艺手册（脱敏）", "access": "read" },
+    { "mount_id": "km-prod-spec", "source": "本实例产品规格与质检标准（脱敏）", "access": "read" },
+    { "mount_id": "km-order-book", "source": "本实例订单台账（脱敏）", "access": "write" }
+  ],
+  "data_domains": [
+    { "domain": "order", "scope": "own_instance_only" },
+    { "domain": "inventory", "scope": "own_instance_only" }
+  ],
+  "tools": [
+    { "tool": "inspect_craft_rule", "mode": "read" },
+    { "tool": "quote_generator", "mode": "write" },
+    { "tool": "export_to_ecosystem", "mode": "deny" }
+  ]
+}
