@@ -1,0 +1,20 @@
+{
+  "instance_id": "inst-woodwork-04",
+  "instance_name": "硬木家具工坊试点",
+  "industry": "hardwood_furniture",
+  "namespace_prefix": "ns-wood-04",
+  "bot_role": { "title": "榫卯工艺与订单评审 Bot", "escalation": "human_review" },
+  "knowledge_mounts": [
+    { "mount_id": "km-joinery", "source": "榫卯结构与木工规则（脱敏）", "access": "read" },
+    { "mount_id": "km-makeable", "source": "本实例可制造性判定表（脱敏）", "access": "write" }
+  ],
+  "data_domains": [
+    { "domain": "work_order", "scope": "own_instance_only" },
+    { "domain": "design_review", "scope": "own_instance_only" }
+  ],
+  "tools": [
+    { "tool": "feasibility_check", "mode": "read" },
+    { "tool": "work_order_update", "mode": "write" },
+    { "tool": "export_to_ecosystem", "mode": "deny" }
+  ]
+}
