@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Customer Agent Pilot Instance",
+  "type": "object",
+  "required": [
+    "instance_id", "instance_name", "industry", "namespace_prefix",
+    "bot_role", "knowledge_mounts", "data_domains", "tools"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "instance_id": {
+      "type": "string",
+      "pattern": "^inst-[a-z][a-z0-9-]{2,31}$",
+      "description": "全局唯一实例 ID，用于命名空间隔离"
+    },
+    "instance_name": { "type": "string", "minLength": 2, "maxLength": 60 },
+    "industry": {
+      "type": "string",
+      "enum": ["gold_jewelry", "apparel_shoe", "health_care",
+               "hardwood_furniture", "carving_craft", "intangible_culture",
+               "retail", "manufacturing"]
+    },
+    "namespace_prefix": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,23}$",
+      "description": "隔离命名空间前缀（每实例唯一），交叉访问靠它隔离"
+    },
+    "bot_role": {
+      "type": "object",
+      "required": ["title", "escalation"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 2 },
+        "escalation": { "type": "string", "enum": ["human_review", "none"] }
+      }
+    },
+    "knowledge_mounts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["mount_id", "source", "access"],
+        "additionalProperties": false,
+        "properties": {
+          "mount_id": { "type": "string", "minLength": 1 },
+          "source": { "type": "string", "minLength": 2 },
+          "access": { "type": "string", "enum": ["read", "write", "deny"] }
+        }
+      }
+    },
+    "data_domains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["domain", "scope"],
+        "additionalProperties": false,
+        "properties": {
+          "domain": { "type": "string", "minLength": 2 },
+          "scope": {
+            "type": "string",
+            "enum": ["own_instance_only", "shared_readonly"]
+          }
+        }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["tool", "mode"],
+        "additionalProperties": false,
+        "properties": {
+          "tool": { "type": "string", "minLength": 2 },
+          "mode": { "type": "string", "enum": ["read", "write", "deny"] }
+        }
+      }
+    }
+  }
+}
