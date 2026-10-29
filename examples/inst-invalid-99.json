@@ -1,0 +1,12 @@
+{
+  "instance_id": "inst-bad-default-99",
+  "instance_name": "非法示例：缺少必填字段 + 命名空间前缀冲突 + 脱敏违规",
+  "industry": "retail",
+  "namespace_prefix": "ns-gold-01",
+  "bot_role": { "title": "非法" },
+  "knowledge_mounts": [],
+  "data_domains": [],
+  "tools": [],
+  "extra_field_not_allowed": true,
+  "leaked_real_customer": "张三 13800138000"
+}
