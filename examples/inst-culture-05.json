@@ -1,0 +1,20 @@
+{
+  "instance_id": "inst-culture-05",
+  "instance_name": "非遗文创 IP 试点",
+  "industry": "intangible_culture",
+  "namespace_prefix": "ns-culture-05",
+  "bot_role": { "title": "文创 IP 内容合规 Bot", "escalation": "human_review" },
+  "knowledge_mounts": [
+    { "mount_id": "km-ip-rules", "source": "IP 授权与合规规则（脱敏）", "access": "read" },
+    { "mount_id": "km-assets", "source": "本实例视觉资产清单（脱敏）", "access": "read" }
+  ],
+  "data_domains": [
+    { "domain": "ip_asset", "scope": "own_instance_only" },
+    { "domain": "license_record", "scope": "own_instance_only" }
+  ],
+  "tools": [
+    { "tool": "license_check", "mode": "read" },
+    { "tool": "content_review", "mode": "write" },
+    { "tool": "public_claim", "mode": "deny" }
+  ]
+}
