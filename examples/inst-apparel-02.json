@@ -1,0 +1,20 @@
+{
+  "instance_id": "inst-apparel-02",
+  "instance_name": "鞋服制造品牌试点",
+  "industry": "apparel_shoe",
+  "namespace_prefix": "ns-apparel-02",
+  "bot_role": { "title": "制版与跟单排产 Bot", "escalation": "human_review" },
+  "knowledge_mounts": [
+    { "mount_id": "km-pattern-lib", "source": "版型库（脱敏）", "access": "read" },
+    { "mount_id": "km-schedule", "source": "本实例排产计划（脱敏）", "access": "write" }
+  ],
+  "data_domains": [
+    { "domain": "pattern", "scope": "own_instance_only" },
+    { "domain": "schedule", "scope": "own_instance_only" }
+  ],
+  "tools": [
+    { "tool": "sample_marker", "mode": "write" },
+    { "tool": "size_curve_calc", "mode": "read" },
+    { "tool": "export_to_ecosystem", "mode": "deny" }
+  ]
+}
