@@ -1,0 +1,21 @@
+{
+  "instance_id": "inst-healthcare-03",
+  "instance_name": "医疗健康服务试点",
+  "industry": "health_care",
+  "namespace_prefix": "ns-health-03",
+  "bot_role": { "title": "健康科普与预约引导 Bot", "escalation": "human_review" },
+  "knowledge_mounts": [
+    { "mount_id": "km-health-guide", "source": "健康科普素材（脱敏）", "access": "read" },
+    { "mount_id": "km-appt-local", "source": "本实例预约记录（脱敏）", "access": "write" },
+    { "mount_id": "km-hippa-note", "source": "合规边界说明：不含真实患者数据", "access": "read" }
+  ],
+  "data_domains": [
+    { "domain": "appointment", "scope": "own_instance_only" },
+    { "domain": "education_material", "scope": "own_instance_only" }
+  ],
+  "tools": [
+    { "tool": "appointment_book", "mode": "write" },
+    { "tool": "faq_answer", "mode": "read" },
+    { "tool": "clinical_lookup", "mode": "deny" }
+  ]
+}
