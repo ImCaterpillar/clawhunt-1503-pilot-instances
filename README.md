@@ -7,7 +7,7 @@
 ## 一条命令验证全部
 
 ```bash
-python run_tests.py      # -> PASS 12 / FAIL 0
+python run_tests.py      # -> PASS 31 / FAIL 0
 python demo.py           # -> 五个实例隔离演示
 ```
 
@@ -35,8 +35,9 @@ python run_tests.py
 # ✅ 3. all five instances registered
 # ✅ 5. namespace prefixes globally unique
 # ✅ 7. pairwise cross-access leaks zero (all pairs) -- leaked=0 pairs=20
-# ✅ 10. invalid instance rejected by schema -- 5 errors
-# Result: PASS 12   FAIL 0
+# ✅ 10. invalid instance rejected by schema -- 6 errors
+# ✅ 10c. duplicate namespace rejected (real branch)
+# Result: PASS 31   FAIL 0
 ```
 
 反例（必须被拒）—— 缺少必填字段 / 冲突命名空间 / 额外字段 / 真实数据：
@@ -46,7 +47,7 @@ python -c "import json; from instance_loader import _validate;
 s=json.load(open('schema/instance.schema.json',encoding='utf-8'));
 bad=json.load(open('examples/inst-invalid-99.json',encoding='utf-8'));
 errs=_validate(bad,s); print(len(errs), 'errors')"
-# 输出: 5 errors      ← 非法实例被 schema 拒绝
+# 输出: 6 errors      ← 非法实例被 schema 拒绝
 ```
 
 ## 快速开始
@@ -62,7 +63,7 @@ python demo.py               # 五实例隔离演示
 ```
 .
 ├── instance_loader.py       # 统一模板 + 实例注册/隔离（核心）
-├── run_tests.py             # 验收验证（12 项断言）
+├── run_tests.py             # 验收验证（31 项断言）
 ├── demo.py                  # 五实例隔离演示
 ├── schema/
 │   └── instance.schema.json # 统一实例模板（8 必填字段）
