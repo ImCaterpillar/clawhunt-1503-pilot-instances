@@ -114,10 +114,20 @@ check("10. invalid instance rejected by schema", len(errs) >= 4,
       f"{len(errs)} errors -> {errs[:3]}")
 try:
     mgr.register(bad)
-    check("10b. duplicate namespace rejected at register", False,
-          "register 未拒绝冲突前缀")
+    check("10b. schema-invalid instance rejected at register", False,
+          "register 未拒绝非法实例")
 except InstanceError as e:
-    check("10b. duplicate namespace rejected at register", True,
+    check("10b. schema-invalid instance rejected at register", True,
+          str(e)[:70])
+# 10c. 真正走命名空间冲突分支：合法配置但 namespace_prefix 与已有实例相同
+conflict = dict(mgr.instance(mgr.instance_ids()[0]))
+conflict["instance_id"] = "inst-conflict-ns-01"
+try:
+    mgr.register(conflict)
+    check("10c. duplicate namespace rejected (real branch)", False,
+          "同前缀注册未拒绝")
+except InstanceError as e:
+    check("10c. duplicate namespace rejected (real branch)", True,
           str(e)[:70])
 
 # 11. 验证记录真实存在
@@ -126,7 +136,7 @@ check("11. verification record exists",
       os.path.isfile(vr) and os.path.getsize(vr) > 500,
       str(os.path.getsize(vr)) + " bytes" if os.path.isfile(vr) else "missing")
 
-# 12. 交付齐套（9 个文件）
+# 12. 交付齐套（15 个文件，绝对路径避免 cwd 依赖）
 refs = ["instance_loader.py", "run_tests.py", "demo.py",
         "schema/instance.schema.json",
         "examples/inst-gold-jewelry-01.json",
@@ -137,7 +147,7 @@ refs = ["instance_loader.py", "run_tests.py", "demo.py",
         "examples/inst-invalid-99.json",
         "README.md", "SETUP.md",
         "docs/验收对照.md", "docs/实现说明.md", "docs/验证记录.md"]
-broken = [r for r in refs if not os.path.isfile(r)]
+broken = [r for r in refs if not os.path.isfile(os.path.join(HERE, r))]
 check("12. delivery set complete (15 files)", not broken,
       "broken=" + str(broken) if broken else str(len(refs)) + " files")
 
