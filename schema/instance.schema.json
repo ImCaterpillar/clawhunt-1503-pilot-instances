@@ -22,8 +22,8 @@
     },
     "namespace_prefix": {
       "type": "string",
-      "pattern": "^[a-z][a-z0-9-]{1,23}$",
-      "description": "隔离命名空间前缀（每实例唯一），交叉访问靠它隔离"
+      "pattern": "^ns-[a-z0-9-]{1,21}$",
+      "description": "隔离命名空间前缀（每实例唯一，强制 ns- 前缀），交叉访问靠它隔离"
     },
     "bot_role": {
       "type": "object",
@@ -59,7 +59,8 @@
           "domain": { "type": "string", "minLength": 2 },
           "scope": {
             "type": "string",
-            "enum": ["own_instance_only", "shared_readonly"]
+            "enum": ["own_instance_only"],
+            "description": "本单隔离主题下仅支持 own_instance_only（数据仅存于本实例命名空间，跨实例不可见）"
           }
         }
       }
