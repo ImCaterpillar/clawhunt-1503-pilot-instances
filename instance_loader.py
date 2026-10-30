@@ -139,8 +139,23 @@ class InstanceManager:
         return iid
 
     # ── 数据读写（隔离核心）────────────────────────────────────────
-    def write(self, instance_id, key, value):
-        """写数据到指定实例的命名空间；key 归属该实例。"""
+    def write(self, instance_id, key, value, requester=None):
+        """写数据到指定实例的命名空间；key 归属该实例。
+
+        requester: 可选，调用方自称的身份（instance_id）。
+        - requester 缺省（None）= 兼容原语模式：由上层保证可信；
+        - requester 给定且 ≠ instance_id = 越权写，抛 InstanceError
+          （与文档「数据读写限定在各自命名空间」一致）。
+        """
+        if requester is not None and requester != instance_id:
+            self._audit.append({
+                "ts": time.time(),
+                "type": "cross_instance_write_blocked",
+                "requester": requester,
+                "target": instance_id,
+            })
+            raise InstanceError(
+                f"写入方 {requester} 无权写入实例 {instance_id} 的命名空间")
         ns, cfg = self._ns_of(instance_id)
         self._registry[ns].add(key)
         return key
@@ -149,10 +164,32 @@ class InstanceManager:
         """读取目标实例命名空间里的 key 集合。
 
         隔离规则：requester 只能读自己实例的数据。
-        跨实例读取 → 返回空集 + 审计（不泄露目标实例的存在性）。
+        跨实例读取 → 返回空集 + 审计（不泄露目标实例的存在性）；
+        目标实例不存在 → 同样返回空集 + 审计（消除存在性侧信道——
+        「未知实例」与「有数据但不给你看」在外部观感上不可区分）。
         """
-        r_ns, _ = self._ns_of(requester_id)
-        t_ns, _ = self._ns_of(target_id)
+        try:
+            r_ns, _ = self._ns_of(requester_id)
+        except InstanceError:
+            self._audit.append({
+                "ts": time.time(), "type": "unknown_requester_read",
+                "requester": requester_id, "target": target_id,
+                "returned": 0})
+            return set()
+        # 目标实例不存在：不抛错，返回空并审计（防侧信道）
+        t_cfg = self._instances.get(target_id)
+        if t_cfg is None:
+            self._audit.append({
+                "ts": time.time(),
+                "type": "cross_instance_read_blocked",
+                "requester": requester_id,
+                "requester_ns": r_ns,
+                "target": target_id,
+                "target_ns": "(unknown)",
+                "returned": 0,
+            })
+            return set()
+        t_ns = t_cfg["namespace_prefix"]
         if r_ns != t_ns:
             self._audit.append({
                 "ts": time.time(),
